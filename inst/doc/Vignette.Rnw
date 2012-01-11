@@ -1,0 +1,291 @@
+\documentclass[a4paper]{article}
+\title{Introduction to \texttt{mpmi}}
+\author{Chris Pardy}
+
+\begin{document}
+%\VignetteIndexEntry{Introduction to mpmi}
+%\VignetteDepends{mpmi}
+\maketitle
+
+\section{Using the \texttt{mpmi} package}
+
+The following vignette will provide a brief introduction to the \texttt{mpmi}
+package, showing the use of the two main functions (\texttt{cmi()} and
+\texttt{mmi()}) as well as explicit parallelisation of their pairwise versions(
+\texttt{cmi.pw()} and \texttt{mmi.pw()}).
+
+First we load the library
+<<results=hide>>=
+library(mpmi)
+@
+
+\subsection{Continuous vs continuous comparisons}
+
+We demonstrate the calculation of MI and BCMI for all pairs of a group of
+continuous variables using a simulated dataset included in the \texttt{mpmi}
+package. The dataset, \texttt{mpmidata} contains a matrix of continuous data
+\texttt{cts} and a matrix of categorical data \texttt{disc}. The continuous data
+consists of $50$ subjects with $100$ variables following a multivariate normal
+distribution (note that this is done for simplicity as our approach is designed
+to work for a much wider class of distributions).  The continuous data were
+simulated to have an association that decays linearly as the distance between each
+pair of variables' indices increases. For reference this was created as follows
+(note that this requires the \texttt{MASS} library to be loaded):
+<<>>=
+# library(MASS)
+# mu <- 1:100
+# S <- toeplitz((100:1)/100)
+# set.seed(123456789)
+# dat <- mvrnorm(50, mu, S)
+# cts <- scale(dat)
+@
+
+The data are loaded and the \texttt{cmi()} function is then applied:
+<<>>=
+data(mpmidata)
+ctsresult <- cmi(cts)
+@
+Below we show the structure of the results object. It is a list containing 3
+matrices. For a set of continuous variables these are square symmetric matrices
+of a similar form to a correlation matrix.
+<<>>=
+str(ctsresult)
+@
+The raw MI values:
+<<>>=
+round(ctsresult$mi[1:5,1:5], 2)
+@
+Jackknife bias corrected MI values:
+<<>>=
+round(ctsresult$bcmi[1:5,1:5], 2)
+@
+
+We can check the results against the pairwise function. In this case we
+calculate the MI between the first variable and itself, which estimates
+its entropy.
+<<>>=
+cmi.pw(cts[,1], cts[,1])
+@
+This agrees with the results above (i.e., the \texttt{[1,1]} element of each
+results matrix).
+
+We can use the \texttt{mp()} function to plot an MI (or correlation) matrix. This
+plots the matrix with points corresponding to the same order that they are
+displayed in a numerical matrix (i.e, the usual mathematical way). 
+It is scaled so that red is the largest value
+and white is the smallest. When applied to the results above we can see the larger 
+values along the diagonal of the BCMI matrix, decaying as the difference between
+$i$ and $j$ increases.
+
+\begin{center}
+<<fig=TRUE,echo=TRUE>>=
+mp(ctsresult$bcmi)
+@
+\end{center}
+
+\subsection{Discrete vs continuous comparisons}
+
+To demonstrate MI for mixed comparisons we generate $75$ random SNP
+variables and create a new set of continuous data where some of the values have
+been shifted according to the categories. 
+<<>>=
+# set.seed(987654321)
+# disc <- rep(c("A", "H", "B"), ceiling(50 * 75 / 3))
+# disc <- matrix(disc, nrow = 50, ncol = 75)
+# disc <- apply(disc, 2, sample)
+@
+This shuffles a fairly even set of $A$, $H$, and $B$ for each variable. We then
+introduce a fairly strong U-shaped shift to continuous variable $i$ based on the
+value of discrete variable $k$, but only for cases where $i = k$.
+<<>>=
+cts2 <- cts
+for (variable in 1:75)
+{
+    for (subject in 1:50)
+    {
+        if (disc[subject, variable] == "A") 
+        {
+            cts2[subject, variable] <- cts[subject, variable] - 2
+        }
+        if (disc[subject, variable] == "B") 
+        {
+            cts2[subject, variable] <- cts[subject, variable] - 2
+        }
+    }
+}
+@
+We run the \texttt{mmi()} function on the discrete and continuous data:
+<<>>=
+mixedresult <- mmi(cts2, disc)
+@
+The results object for mixed comparisons have the same form as the results
+object for continuous comparisons. The only difference is that now instead of
+square symmetric matrices (for continuous data) the results are $n_c \times n_d$
+matrices where $n_c$ is the number of continuous variables and $n_d$ is the
+number of discrete variables. The row index refers to continuous variables and
+the column index refers to discrete variables.
+<<>>=
+str(mixedresult, width = 60, strict.width = "cut")
+@
+As before we have the raw MI values:
+<<>>=
+round(mixedresult$mi[1:5,1:5], 2)
+@
+And jackknife bias corrected MI values:
+<<>>=
+round(mixedresult$bcmi[1:5,1:5], 2)
+@
+
+Once again we can check by using the pairwise function:
+<<>>=
+mmi.pw(cts2[,1], disc[,1])
+@
+
+We can use \texttt{mp()} to plot the BCMI values and see the strong associations
+we've induced for cases where $i = j$ (note that the BCMI matrix is not square):
+\begin{center}
+<<fig=TRUE,echo=TRUE>>=
+mp(mixedresult$bcmi)
+@
+\end{center}
+
+\subsection{Explicit parallelisation}
+
+The pairwise functions are provided to allow the user to explicitly
+control parallelisation. Here we demonstrate how to parallelise in R using the
+\texttt{parallel} package (based on the older \texttt{multicore})
+package. As this package makes use of the POSIX \texttt{fork()} system function
+it can only be run on POSIX systems (i.e., Linux and MacOS; note that the
+implicit OpenMP parallelisation works on all three platforms, Linux, MacOS and
+Windows). For portability we will not actually run the code in this section, 
+although it should work fine on Linux and Mac.
+
+To apply this approach we need to create a function that will be run in
+parallel. Each application of this function will be sent to a processor core, so
+we must decide on `packaging' groups of MI calculations such that this
+is done in an efficient way. Details are given below.
+
+The pairwise functions \texttt{mmi.pw()}, \texttt{cmi.pw()} and \texttt{dmi.pw()}
+are provided to facilitate explicit parallelisation. Each of these functions
+calculates MI and BCMI values for comparisons between two variables with
+appropriate types.
+
+\subsubsection{Mixed comparisons}
+
+We first show how to parallelise the mixed comparisons as this is more
+straightforward than the continuous comparisons. Performance may be further
+improved by using the R bytecode compiler. First we must load the
+\texttt{parallel} and \texttt{compiler} libraries:
+<<>>=
+# library(parallel) # Commented for portability
+library(compiler)
+@
+
+The \texttt{mmi.pw()} function will calculate appropriate smoothing bandwidths
+as required. This will result in a lot of unnecessary computational
+repetition, so it is much faster to pre-compute the bandwidths before running the
+comparisons in parallel:
+<<>>=
+hs <- apply(cts2, 2, dpik, level = 3L, kernel = "epanech")
+@
+
+Now we must choose how to parallelise. The simplest approach is to write a
+function that calculates all comparisons between continuous variables and a
+single discrete variable (or vice versa). This is the same approach implemented
+by OpenMP in \texttt{mmi()}. For each SNP $i$ we apply the following function:
+<<>>=
+fi <- function(i)
+{
+    bcmis <- rep(NaN, 100)
+    for (j in 1:100)
+    {
+        bcmis[j] <- mmi.pw(cts2[,j], disc[,i], h = hs[j])$bcmi
+    }
+    return(bcmis)
+}
+fi <- cmpfun(fi)
+@
+This returns a vector containing the BCMI values for SNP $i$. Modifying 
+\texttt{fi()} to also keep the raw MI scores is straightforward. 
+
+
+We now use the \texttt{mcmapply()} function from the \texttt{parallel} package
+(which is now a part of base R). 
+This will calculate the vectors returned by the \texttt{fi()} and bind them as
+columns in a matrix.
+<<>>=
+# parmmi <- mcmapply(fi, 1:75)
+@
+We can check that the results are equal to those calculated using implicit
+parallelisation:
+<<>>=
+# sum(abs(mixedresult$bcmi - parmmi))
+@
+
+\subsubsection{Continuous comparisons}
+
+Once again we pre-compute the smoothing parameters:
+<<>>=
+hs2 <- apply(cts, 2, dpik, level = 3L, kernel = "epanech")
+@
+
+For the continuous comparisons we only need to calculate each comparison once to
+fill the lower (or upper) triangle of the results matrix. This requires a
+slight modification to the range of the loop in \texttt{fi()}:
+<<>>=
+fi <- function(i)
+{
+    bcmis <- rep(NaN, 100)
+    for (j in i:100)
+    {
+        bcmis[j] <- cmi.pw(cts[,i], cts[,j], h = hs2[c(i,j)])$bcmi
+    }
+    return(bcmis)
+}
+fi <- cmpfun(fi)
+@
+
+We smooth each of the two continuous variables by a different amount, so the
+\texttt{cmi.pw()} function requires two additional parameters which are input as
+a vector. These will be automatically calculated if not explicitly given.
+We run this in parallel in the same way as above:
+<<>>=
+# parcmi <- mcmapply(fi, 1:100)
+@
+Now we check the results. The \texttt{parcmi} matrix contains an upper triangle
+full of missing values which would usually need to be symmetrised 
+(the \texttt{cmi()} wrapper function takes care of this). In general, an MI matrix for
+continuous variables is symmetric (much like a correlation matrix) and has
+entropy estimates along the diagonal. So to check these results we simply need
+to check that the lower triangle of \texttt{parcmi} is equal to the lower
+triangle of \texttt{ctsresult\$bcmi}.  A simple approach for
+this check is to define a convenience function \texttt{lt()} to extract the lower
+triangle of a matrix, and observe that the sum of the absolute differences is
+computationally zero:
+<<>>=
+lt <- function(x) x[lower.tri(x, diag = TRUE)]
+# sum(abs(lt(ctsresult$bcmi) - lt(parcmi)))
+@
+
+\subsection{Parallelisation across multiple machines}
+
+The parallel version can be run across multiple machines in a cluster in a
+similar manner, by using the \texttt{snowfall} R package. This requires
+helper functions to be written that are identical to the \texttt{fi()} above.
+
+\subsection{A note about $z$-values}
+
+The functions in this package also return $z$-scores from the jackknife test for
+the hypothesis of no association (i.e., zero MI). We have found p-values and confidence
+intervals based on these $z$-scores to be highly variable and often quite wrong.
+Do not use these for statistical inference. The jackknife bias correction
+however does work quite well to reduce error in estimation of MI values (which
+we report as BCMI). 
+
+Since we essentially get the $z$-scores for free after calculating the bias
+correction we have decided to report them. They are useful for giving some idea
+of the strength of an observed association and can be considered as a heuristic
+transformation of the BCMI values that may aid interpretation. A permutation
+test is a much better choice for inference.
+
+\end{document}

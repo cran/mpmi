@@ -1,0 +1,16 @@
+useDynLib(mpmi)
+export(cmi, 
+cminjk, 
+cminjk.pw, 
+cmi.pw, 
+dmi, 
+dminjk, 
+dminjk.pw, 
+dmi.pw,
+mmi, 
+mminjk, 
+mminjk.pw, 
+mmi.pw, 
+mp)
+
+import(KernSmooth)
