@@ -10,8 +10,9 @@
 \description{This function calculates MI and BCMI between a set of continuous variables
     held as columns in a matrix. It also performs jackknife bias correction and
     provides a z-score for the hypothesis of no association. Also included are
-    the *.pw functions that calculate MI between two vectors only.
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+    the *.pw functions that calculate MI between two vectors only. The *njk
+    functions do not perform the jackknife and are therefore faster. 
+    %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
 cmi(cts, level = 3L, na.rm = FALSE, h, ...)
@@ -48,7 +49,8 @@ cminjk.pw(v1, v2, h, ...)
     with each row and column index corresponding to a given variable.
     cminjk() and cminjk.pw() just returns the MI values without performing the
     jackknife. cmi.pw() and cminjk.pw() each only require two bandwidths, one
-    for each variable.
+    for each variable. The number of processor cores used can be changed by
+    setting the environment variable "OMP_NUM_THREADS" \emph{before} starting R.
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{ Returns a list of 3 matrices each of size ncol(cts) by

@@ -8,12 +8,13 @@
     of discrete variables.
 %%  ~~function to do ... ~~
 }
-\description{ This function calculates MI and BCMI between a set of continuous variables
-    and a set of discrete variables (variables in columns). It also performs jackknife bias correction and
-    provides a z-score for the hypothesis of no association. Also included are
-    the *.pw functions that calculate MI between two vectors only and the `njk'
-    functions that do not perform the jackknife.
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+\description{This function calculates MI and BCMI between a set of continuous variables
+    and a set of discrete variables (variables in columns). It also performs
+    jackknife bias correction and provides a z-score for the hypothesis of no
+    association. Also included are the *.pw functions that calculate MI between
+    two vectors only. The *njk functions do not perform the jackknife and are
+    therefore faster. 
+    %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
 mmi(cts, disc, level = 3L, na.rm = FALSE, h, ...)
@@ -49,9 +50,10 @@ mminjk.pw(cts, disc, h, ...)
 %%     ~~Describe \code{\dots} here~~
 } 
 }
-\details{ mminjk() and mminjk.pw() return just the MI values without performing the
+\details{mminjk() and mminjk.pw() return just the MI values without performing the
     jackknife. mmi.pw() and mminjk.pw() only require one bandwidth for the
-    continuous variable.
+    continuous variable. The number of processor cores used can be changed by
+    setting the environment variable "OMP_NUM_THREADS" \emph{before} starting R.
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{ Returns a list of 3 matrices each of size ncol(cts) by
@@ -115,7 +117,6 @@ lapply(c1, round, 2)
 # A pairwise comparison
 
 # Note that the ANOVA homoskedasticity assumption is not satisfied here.
-# (Without transforming the data)
 boxplot(InsectSprays[,1] ~ InsectSprays[,2])
 mmi.pw(InsectSprays[,1], InsectSprays[,2])
 

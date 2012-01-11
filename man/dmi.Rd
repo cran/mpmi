@@ -10,7 +10,8 @@
 \description{ This function calculates MI and BCMI between a set of discrete variables
     held as columns in a matrix. It also performs jackknife bias correction and
     provides a z-score for the hypothesis of no association. Also included are
-    the *.pw functions that calculate MI between two vectors only.
+    the *.pw functions that calculate MI between two vectors only. The *njk
+    functions do not perform the jackknife and are therefore faster. 
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
@@ -31,7 +32,8 @@ dminjk.pw(disc1, disc2)
 \details{ The results of dmi() are in many ways similar to a correlation matrix,
     with each row and column index corresponding to a given variable.
     dminjk() and dminjk.pw() just returns the MI values without performing the
-    jackknife.
+    jackknife. The number of processor cores used can be changed by
+    setting the environment variable "OMP_NUM_THREADS" \emph{before} starting R.
 }
 \value{ Returns a list of 3 matrices each of size \code{ncol(dmat)} by
     \code{ncol(dmat)}
