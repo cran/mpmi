@@ -1,7 +1,7 @@
 NEWS for mpmi
 
 Changes in version 0.4:
-    *   Changed all functions to use DUP = FALSE for safety (this fixes a nasty memory aliasing bug when using dmi())
+    *   Changed all functions to use DUP = TRUE for safety (this fixes a nasty memory aliasing bug when using dmi())
     *	Implemented some regression tests (available in the repository at http://r-forge.r-project.org/projects/mpmi/ )
 
 Changes in version 0.03: 

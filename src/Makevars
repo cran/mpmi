@@ -1,2 +1,16 @@
 PKG_LIBS=$(SHLIB_OPENMP_FCFLAGS)
 PKG_FCFLAGS=$(SHLIB_OPENMP_FCFLAGS)
+
+all: $(SHLIB)
+
+cmi.o: 10iface.o
+
+cminjk.o: 10iface.o  
+
+dmi.o: 10iface.o  
+
+mmi.o: 10iface.o  
+
+mminjk.o: 10iface.o  
+
+

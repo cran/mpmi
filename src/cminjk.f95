@@ -1,3 +1,22 @@
+! 
+!     Copyright 2013 Chris Pardy <cpardy@unsw.edu.au>
+! 
+!     This file is part of the mpmi R package.
+! 
+!     This program is free software: you can redistribute it and/or modify
+!     it under the terms of the GNU General Public License as published by
+!     the Free Software Foundation, version 3.
+! 
+!     This program is distributed in the hope that it will be useful,
+!     but WITHOUT ANY WARRANTY; without even the implied warranty of
+!     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!     GNU General Public License for more details.
+! 
+!     You should have received a copy of the GNU General Public License
+!     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+!
+
+
 ! Epanechnikov kernel
 ! Pairwise only
 ! NO Jackknife
@@ -20,9 +39,7 @@ subroutine cmipwnjk(v1, v2, lv, h1, h2, ans)
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ! Output variables:
     ! ans = raw MI
-    ! mps = jackknife bias corrected MI
-    ! zvalue = z value for hypothesis that mps == 0
-    real(kind=rdble), intent(out) :: ans !, mps, zvalue
+    real(kind=rdble), intent(out) :: ans 
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -40,18 +57,6 @@ subroutine cmipwnjk(v1, v2, lv, h1, h2, ans)
     !
     ! s12 holds the sums of product kernels for each point
     real(kind=rdble), dimension(lv) :: s1, s2, s12
-    
-    ! Jackknife replication MI values
-    ! real(kind=rdble), dimension(lv) :: ansjk
-
-    ! Jackknife pseudo-values
-    ! real(kind=rdble), dimension(lv) :: ps
-
-    ! Temporary variables for jackknife
-    ! real(kind=rdble) :: ts1, ts2, ts12
-
-    ! SD of pseudo-values
-    ! real(kind=rdble) :: sdps
 
     ! Kernel matrices for vectors 1 & 2
     real(kind=rdble), dimension(lv, lv) :: kmat1, kmat2 
@@ -132,34 +137,7 @@ subroutine cmipwnjk(v1, v2, lv, h1, h2, ans)
         ans = ans + log(s12(i) / (s1(i) * s2(i)))
     end do
     ans = ans / lv + log(dble(lv))
-
-    ! ! Get jackknife estimates
-    ! ansjk = 0.0
-    ! do k = 1, lv
-    !     do i = 1, lv
-    !         ! Exclude kth observation
-    !         if (i .ne. k) then
-    !             ! Subtract kernel distances corresponding 
-    !             ! to kth (excluded) observation
-    !             ts1 = s1(i) - kmat1(k, i)
-    !             ts2 = s2(i) - kmat2(k, i)
-    !             ts12 = s12(i) - kmat1(k, i) * kmat2(k, i)
-
-    !             ! Accumulate jackknife MI values
-    !             ansjk(k) = ansjk(k) + log(ts12 / (ts1 * ts2))
-    !         end if
-    !     end do
-    ! end do
-    ! ansjk = ansjk / (dble(lv) - 1.0) + log(dble(lv) - 1.0)
-
-    ! ! Tukey's jackknife pseudo values
-    ! ps = dble(lv) * ans - (dble(lv) - 1.0) * ansjk
-
-    ! ! Bias corrected MI
-    ! mps = sum(ps) / dble(lv)
-    ! ! Get z-value for hypothesis that mps == 0
-    ! sdps = sqrt(sum((ps - mps) * (ps - mps)) / (dble(lv) - 1.0))
-    ! zvalue = sqrt(dble(lv)) * mps / sdps
+    
 end subroutine
 
 subroutine cmimnjk(cdat, nrc, ncc, mis, h)
@@ -170,13 +148,9 @@ subroutine cmimnjk(cdat, nrc, ncc, mis, h)
     integer, intent(in) :: nrc, ncc
     real(kind=rdble), dimension(nrc, ncc), intent(in) :: cdat
     real(kind=rdble), dimension(ncc), intent(in) :: h
-    ! integer, dimension(nrs, ncs), intent(in) :: sdat
 
     ! Output matrices
     real(kind=rdble), dimension(ncc, ncc), intent(out) :: mis
-    ! real(kind=rdble), dimension(ncc, ncc), intent(out) :: bcmis
-    ! Matrix of z-values
-    ! real(kind=rdble), dimension(ncc, ncc), intent(out) :: zmat
 
     ! Arrays to hold non-missing observations only
     ! Reuse 'static' arrays for speed
@@ -218,15 +192,11 @@ subroutine cmimnjk(cdat, nrc, ncc, mis, h)
             else
                 ! Set all results to zero
                 mis(i, j) = 0.0
-                ! bcmis(i, j) = 0.0
-                ! zmat(i, j) = 0.0
             end if
 
             ! Symmetrise result matrix
             if (i .ne. j) then
                 mis(j, i) = mis(i, j)
-                ! bcmis(j, i) = bcmis(i, j)
-                ! zmat(j, i) = zmat(i, j)
             end if
         end do
     end do
