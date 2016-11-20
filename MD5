@@ -1,7 +1,7 @@
 685c571e44fba386372b4c39d8b5bcf7 *COPYING
-d2032d143f2666369c6715e8b5798e45 *DESCRIPTION
-8a05ec7eef736bb0164bbd65a85bbc59 *NAMESPACE
-9d3be46d389f97fcff6cb44448b682b2 *NEWS
+829532bdfb1f2d852930a29e6715fe34 *DESCRIPTION
+21244b6cca0a29abd21eb5ab7a274d8a *NAMESPACE
+c32e4029bfebf7a4bcb50bb3547446da *NEWS
 18c7efda3491ed0f93a008c2a399a411 *R/cmi.R
 9fe8c20e455ba05adb8d59ac0315df23 *R/cminjk.R
 0c49e720a897be3cf9f90cccb298e41f *R/dmif.R
@@ -9,7 +9,7 @@ d2032d143f2666369c6715e8b5798e45 *DESCRIPTION
 8d703aa7046919963756094ad1894ea9 *R/mmi.R
 accf11ec4a3d2a98ac1961fde69f98b8 *R/mminjk.R
 4180554be186c5bfed70deebe670c42b *R/mp.R
-d939094f9ccbef7d6ae4e507ca2da9a6 *build/vignette.rds
+d3bff2b069d660fdcb6e64dbf88b6fdf *build/vignette.rds
 2ffe31d9ec49fc259012b57a85540bf6 *data/mpmidata.RData
 896a4a6c0b079863e34d9d375d7f2b53 *inst/doc/Vignette.R
 5ff5e6e54db7d5827746a42af59b1e45 *inst/doc/Vignette.Rnw
