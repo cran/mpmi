@@ -1,5 +1,8 @@
 NEWS for mpmi
 
+Changes in version 0.43:
+    *   Fix compilation flags for OpenMP
+
 Changes in version 0.42:
     *   Fix namesapce issue
 

@@ -1,8 +1,8 @@
 Package: mpmi
 Type: Package
 Title: Mixed-Pair Mutual Information Estimators
-Version: 0.42
-Date: 2016-11-20
+Version: 0.43
+Date: 2019-04-22
 Author: Chris Pardy
 Maintainer: Chris Pardy <cooliomcdude@gmail.com>
 Description: Uses a kernel smoothing approach to calculate Mutual Information
@@ -14,7 +14,7 @@ Description: Uses a kernel smoothing approach to calculate Mutual Information
 License: GPL-3
 URL: http://r-forge.r-project.org/projects/mpmi/
 Depends: KernSmooth
-Packaged: 2016-11-20 07:44:56 UTC; cp
 NeedsCompilation: yes
+Packaged: 2019-04-22 06:12:27 UTC; cp
 Repository: CRAN
-Date/Publication: 2016-11-20 16:40:03
+Date/Publication: 2019-04-22 06:40:03 UTC
