@@ -23,7 +23,7 @@ dpikSafe <- function(x, ...)
 {
 	result <- try(dpik(x, ...), silent = TRUE)
 
-	if (class(result) == "try-error")
+	if (inherits(result, "try-error"))
 	{
 		msg <- geterrmessage()
 		if (grepl("scale estimate is zero for input data", msg))

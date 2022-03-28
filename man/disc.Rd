@@ -9,5 +9,5 @@ which have 3 categories (A, H and B where H represents a heterozygous mutation).
 There are no associations between any of the variables. The variables are stored 
 as characters. See the vignette for details
 }
-\usage{data(mpmidata); disc}
+\usage{disc}
 \format{A matrix of characters with 50 rows and 75 columns}

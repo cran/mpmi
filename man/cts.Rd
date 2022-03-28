@@ -9,5 +9,5 @@ variables with similar indices are associated with the degree of association
 decaying as variables are further apart (i.e., a correlation or information
 matrix with have larger values near the diagonal). Details are given in the vignette.
 }
-\usage{data(mpmidata); cts}
+\usage{cts}
 \format{A matrix with 50 rows and 100 columns}
