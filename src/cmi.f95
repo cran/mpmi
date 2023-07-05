@@ -210,7 +210,7 @@ subroutine cmim(cdat, nrc, ncc, mis, bcmis, zmat, h)
 
     !$omp parallel do default(none) shared(ncc, nrc, cdat, &
     !$omp h, mis, bcmis, zmat)  &
-    !$omp private(ok, nok, cvec, svec, i, j) &
+    !$omp private(ok, nok, cvec, svec, i, j, k) &
     !$omp schedule(dynamic)
     do i = 1, ncc
         do j = i, ncc

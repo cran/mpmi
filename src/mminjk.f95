@@ -172,7 +172,7 @@ subroutine mmimnjk(cdat, nrc, ncc, sdat, nrs, ncs, mis, h)
 
     !$omp parallel do default(none) shared(ncc, ncs, cdat, sdat, &
     !$omp nrc, naint, h, mis)  &
-    !$omp private(ok, nok, cvec, svec, i, j) &
+    !$omp private(ok, nok, cvec, svec, i, j, k) &
     !$omp schedule(dynamic)
     do i = 1, ncc
         do j = 1, ncs

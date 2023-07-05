@@ -1,7 +1,7 @@
 Package: mpmi
 Type: Package
 Title: Mixed-Pair Mutual Information Estimators
-Version: 0.43.2
+Version: 0.43.2.1
 Date: 2019-04-22
 Author: Chris Pardy
 Maintainer: Chris Pardy <cooliomcdude@gmail.com>
@@ -16,6 +16,6 @@ URL: https://r-forge.r-project.org/projects/mpmi/
 Depends: R(>= 3.6.2), KernSmooth
 LazyData: true
 NeedsCompilation: yes
-Packaged: 2022-03-28 16:36:19 UTC; hornik
+Packaged: 2023-07-05 09:30:40 UTC; ripley
 Repository: CRAN
-Date/Publication: 2022-03-28 17:03:53 UTC
+Date/Publication: 2023-07-05 09:37:38 UTC

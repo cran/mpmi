@@ -1,5 +1,5 @@
 685c571e44fba386372b4c39d8b5bcf7 *COPYING
-5df7d50b4be47640d0616dff9cc30baf *DESCRIPTION
+4b23e8fe791e59334c924a6ffae09cb4 *DESCRIPTION
 21244b6cca0a29abd21eb5ab7a274d8a *NAMESPACE
 8e922d324a0ca1991e59c9ae40f283c1 *NEWS
 18c7efda3491ed0f93a008c2a399a411 *R/cmi.R
@@ -23,10 +23,10 @@ b7df309f899c2d00792b4f890fe0fa32 *man/mmi.Rd
 ebcb5247b1d8903b32a8d195182d336b *src/10iface.f95
 5d181ebae5c498dec7dfede09bfd77b1 *src/Makevars
 5c65b6a2588af1693f989bea9aa461c1 *src/Makevars.ucrt
-807773a23e7afc9538006d45918bbc1f *src/cmi.f95
-5a5eb0e38ac9c22e4f4acf328d941788 *src/cminjk.f95
+f2edb0007ae9d9766586f63dea47a922 *src/cmi.f95
+c0765f838e57836247fe3f0add4e7bf8 *src/cminjk.f95
 26d4bfa9010060e294703ccf1bc0ab53 *src/dmi.f95
-5f4ed7bb01d978cc701fe999de5f1f8c *src/mmi.f95
-ae7197c6e5beb5eff81c72a3543087c2 *src/mminjk.f95
+9a182e98898c29be0d5984a8fac86abe *src/mmi.f95
+a39aa9927c05dcb66ce63477ccc8ae12 *src/mminjk.f95
 87b514ea8f7acc15eb0c2d2366fbd643 *src/nawrap.c
 5ff5e6e54db7d5827746a42af59b1e45 *vignettes/Vignette.Rnw
